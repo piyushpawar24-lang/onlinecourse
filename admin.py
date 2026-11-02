@@ -1,10 +1,7 @@
 from django.contrib import admin
-from django.contrib.auth.models import User, Group
-from django.contrib.sessions.models import Session
-from django.contrib.contenttypes.models import ContentType
-from django.contrib.sites.models import Site
-from django.contrib.admin.models import LogEntry
-from .models import Course, Lesson, Question, Choice, Submission
+from .models import (
+    Course, Lesson, Instructor, Learner, Question, Choice, Submission, Enrollment
+)
 
 
 class ChoiceInline(admin.TabularInline):
@@ -21,7 +18,6 @@ class QuestionInline(admin.StackedInline):
 class CourseAdmin(admin.ModelAdmin):
     list_display = ("name",)
     search_fields = ("name",)
-    inlines = []
 
 
 @admin.register(Lesson)
@@ -34,9 +30,9 @@ class LessonAdmin(admin.ModelAdmin):
 
 @admin.register(Question)
 class QuestionAdmin(admin.ModelAdmin):
-    list_display = ("question_text", "lesson", "grade")
+    list_display = ("question_text", "course", "lesson", "grade")
     search_fields = ("question_text",)
-    list_filter = ("lesson",)
+    list_filter = ("course", "lesson")
     inlines = [ChoiceInline]
 
 
@@ -48,5 +44,23 @@ class ChoiceAdmin(admin.ModelAdmin):
 
 @admin.register(Submission)
 class SubmissionAdmin(admin.ModelAdmin):
-    list_display = ("id", "student", "course", "score", "total_questions", "submitted_at")
+    list_display = (
+        "id", "enrollment", "score", "total_questions", "submitted_at"
+    )
     readonly_fields = ("submitted_at",)
+
+
+@admin.register(Instructor)
+class InstructorAdmin(admin.ModelAdmin):
+    list_display = ("user", "full_time", "total_learners")
+
+
+@admin.register(Learner)
+class LearnerAdmin(admin.ModelAdmin):
+    list_display = ("user", "occupation")
+
+
+@admin.register(Enrollment)
+class EnrollmentAdmin(admin.ModelAdmin):
+    list_display = ("learner", "course", "date_enrolled")
+    readonly_fields = ("date_enrolled",)
