@@ -1,0 +1,19 @@
+{% extends "onlinecourse/base.html" %}
+{% block title %}Mock Exam Results{% endblock %}
+{% block content %}
+<div class="card shadow-sm">
+  <div class="card-body text-center">
+    {% if submission.total_questions and submission.score == submission.total_questions %}
+      <h1 class="text-success">Congratulations!</h1>
+      <p class="lead">You successfully completed the mock exam.</p>
+    {% else %}
+      <h1 class="text-primary">Exam Results</h1>
+      <p class="lead">Your mock exam has been submitted.</p>
+    {% endif %}
+    <p class="fs-4">Score: <strong>{{ submission.score }} / {{ submission.total_questions }}</strong></p>
+    <p>Percentage: <strong>{{ submission.percentage }}%</strong></p>
+    <p>Course: {{ submission.course.name }}</p>
+    <a class="btn btn-primary" href="{% url 'onlinecourse:course_details' submission.course.id %}">Try again</a>
+  </div>
+</div>
+{% endblock %}
